@@ -22,19 +22,14 @@ resource "harvester_ssh_key" "quickstart_ssh_key" {
   public_key = trimspace(tls_private_key.global_key.public_key_openssh)
 }
 
-# Ubuntu image used for Rancher server
-resource "harvester_image" "ubuntu20" {
-  name      = "${var.prefix}-ubuntu20"
-  namespace = "harvester-public"
-
-  display_name = "ubuntu-20.04-server-cloudimg-amd64.img"
-  source_type  = "download"
-  url          = "http://cloud-images.ubuntu.com/releases/focal/release/ubuntu-20.04-server-cloudimg-amd64.img"
+data "harvester_image" "rancher" {
+  name      = var.image_name
+  namespace = var.image_namespace
 }
 
 data "harvester_network" "rancher" {
   name      = var.network_name
-  namespace = var.namespace
+  namespace = var.network_namespace
 }
 
 resource "harvester_virtualmachine" "rancher_server" {
@@ -43,9 +38,6 @@ resource "harvester_virtualmachine" "rancher_server" {
   restart_after_update = true
 
   description = "Rancher server"
-  tags = {
-    ssh-user = "ubuntu"
-  }
 
   cpu    = 2
   memory = "4Gi"
@@ -74,7 +66,7 @@ resource "harvester_virtualmachine" "rancher_server" {
     bus        = "virtio"
     boot_order = 1
 
-    image       = harvester_image.ubuntu20.id
+    image       = data.harvester_image.rancher.id
     auto_delete = true
   }
 
@@ -168,7 +160,7 @@ resource "harvester_virtualmachine" "quickstart_node" {
     bus        = "virtio"
     boot_order = 1
 
-    image       = harvester_image.ubuntu20.id
+    image       = data.harvester_image.rancher.id
     auto_delete = true
   }
 

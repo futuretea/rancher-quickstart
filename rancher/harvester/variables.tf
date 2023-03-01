@@ -22,6 +22,21 @@ variable "namespace" {
   default     = "default"
 }
 
+variable "image_namespace" {
+  type        = string
+  description = "Namespace of the Harvester image to deploy the VMs into"
+}
+
+variable "image_name" {
+  type        = string
+  description = "Name of the Harvester image to deploy the VMs into"
+}
+
+variable "network_namespace" {
+  type        = string
+  description = "Namespace of the Harvester network to deploy the VMs into"
+}
+
 variable "network_name" {
   type        = string
   description = "Name of the Harvester network to deploy the VMs into"
